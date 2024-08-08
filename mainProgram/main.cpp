@@ -14,9 +14,10 @@ std::string loopFile(std::string fileName);
 void listTasks(std::string currentDir);
 bool sortByExtensionCustom(std::string s1, std::string s2);
 void sortFromExtension(std::vector<std::string>& files);
+void completeTask(std::string studentDir, std::string nameOfTask);
 
 int main(){
-    std::string student, dailyTasks, taskNameReqest, currentDir = "../tasks/";
+    std::string statusOfTasks, YON, student, dailyTasks, taskNameReqest, currentDir = "../tasks/";
     std::cout << "Loading MySchoolTracker v1.1.0\n";
     std::cout << "Loading files...\n\n";
     std::cout << "What student's tasks would you like to look at? (No capitalization)\n";
@@ -24,7 +25,12 @@ int main(){
     student += "/";
     currentDir += student;
     tasks:
+    std::cout << "Complete tasks or incomplete tasks?(complete/incomplete)";
+    std::cin >> statusOfTasks;
+    statusOfTasks += "/";
+    currentDir += statusOfTasks;
     listTasks(currentDir);
+    currentDir = "../tasks/" + student;
     std::cout << dailyTasks << std::endl;
     std::cout << "What task would you like to look at?\n";
     std::cin >> taskNameReqest;
@@ -32,6 +38,11 @@ int main(){
     taskNameReqest = currentDir + taskNameReqest;
     loopFile(taskNameReqest);
     std::cout << "The instructions for this task are:\n " << fileContents << "\n";
+    std::cout << "Would you like to check off this task?(y/n)";
+    std::cin >> YON;
+    if (YON == "y"){
+        completeTask(currentDir, taskNameReqest);
+    }
     system("pause"); //Pauses so that the console doesn't close automatically.
     goto tasks;
 }
@@ -79,4 +90,14 @@ void sortFromExtension(std::vector<std::string>& files){
     for (auto s : files){
         std::cout << s << "\n";
     }
+}
+
+void completeTask(std::string studentDir, std::string nameOfTask){
+    std::string destination = studentDir + nameOfTask + "/", fileFrom = nameOfTask;
+    std::filesystem::current_path(studentDir);
+    std::cout << studentDir << "\n";
+    std::filesystem::copy(fileFrom, destination);
+    std::filesystem::remove(fileFrom);
+    std::cout << "Successful";
+    system("pause");
 }
